@@ -2,48 +2,17 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const WebpackPwaManifest = require('webpack-pwa-manifest');
 const path = require('path');
 const { InjectManifest } = require('workbox-webpack-plugin');
+const { Generator } = require('webpack');
+const is_prod = process.env.NODE_ENV==='production'
 // const WorkboxPlugin = require('workbox-webpack-plugin');
 // TODO: Add and configure workbox plugins for a service worker and manifest file.
 
 // TODO: Add CSS loaders and babel to webpack.
 
-const productionPlugins = [
-  // new WorkboxPlugin.GenerateSW({
-  //   // these options encourage the ServiceWorkers to get in there fast
-  //   // and not allow any straggling "old" SWs to hang around
-  //   clientsClaim: true,
-  //   skipWaiting: true,
-  // }),
-  new WebpackPwaManifest({
-    name: 'My Progressive Web App',
-    short_name: 'MyPWA',
-    description: 'My awesome Progressive Web App!',
-    background_color: '#ffffff',
-    theme_color: '#ffff',
-    crossorigin: 'use-credentials', //can be null, use-credentials or anonymous
-    ios: true,
-    publicPath: '/',
-    icons: [
-      {
-        src: path.resolve('src/images/logo.png'),
-        sizes: [96, 128, 192, 256, 384, 512] // multiple sizes
-      },
-      {
-        src: path.resolve('src/images/logo.png'),
-        size: '1024x1024' // you can also use the specifications pattern
-      },
-      {
-        src: path.resolve('src/images/logo.png'),
-        size: '1024x1024',
-        purpose: 'maskable'
-      }
-    ]
-  })
-
-]
 
 
-const plugins= [
+
+const productionPlugins= [
   new InjectManifest({
     swSrc: './src-sw.js',
     swDest: 'service-worker.js',
@@ -58,15 +27,19 @@ const plugins= [
       {
         src: path.resolve('./src/images/logo.png'),
         sizes: [96, 128, 192, 256, 384, 512],
-        // destination: path.join('assets', 'icons'),
+        destination: path.join('assets', 'icons'),
+        filename:'icon_96x96.png'
       },
     ],
   }),
-  new HtmlWebpackPlugin({
-    template: './index.html',
-    filename: 'index.html',
-  }),
+
 ]
+const plugins=[new HtmlWebpackPlugin({
+  template: './index.html'
+})]
+if(is_prod){
+  plugins.push(...productionPlugins)
+}
 
 // const plugins = [
 // //   new HtmlWebpackPlugin({
@@ -102,7 +75,43 @@ module.exports = () => {
             "css-loader",
           ],
         },
+        {
+          test: /\.(?:js|mjs|cjs)$/,
+          exclude: /node_modules/,
+          use: {
+            loader: 'babel-loader',
+            options: {
+              presets: [
+                ['@babel/preset-env', { targets: "defaults" }]
+              ]
+            }
+          }
+        },
+        {
+          test: /\.(png|svg|jpg)$/,
+          // exclude: /node_modules/,
+          type:'asset/resorces',
+          generator:{
+            filename:'assets/[name].[hash][ext]'
+          }
+        }
       ],
     },
+
+    devServer: {
+      static: {
+        directory: path.join(__dirname, 'dist'),
+      },
+      compress: true,
+      port: 8888,
+      // proxy:[{
+      //   context:['/'],
+      //   target:'http://localhost:3000',
+      //   secure:false
+      // }],
+      watchFiles: {
+        paths: ['./index.html']
+      }
+    }
   };
 };

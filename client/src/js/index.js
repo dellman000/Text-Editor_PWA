@@ -23,11 +23,18 @@ if (typeof editor === 'undefined') {
   loadSpinner();
 }
 
+// // Check if service workers are supported
+// if ('serviceWorker' in navigator&&process.env.NODE_ENV ==='production') {
+//   // register workbox service worker
+//   const workboxSW = new Workbox('/src-sw.js');
+//   workboxSW.register();
+// } else {
+//   console.error('Service workers are not supported in this browser.');
+// }
+
 // Check if service workers are supported
-if ('serviceWorker' in navigator) {
+if ('serviceWorker' in navigator&&location.hostname !=='127.0.0.1') {
   // register workbox service worker
   const workboxSW = new Workbox('/src-sw.js');
   workboxSW.register();
-} else {
-  console.error('Service workers are not supported in this browser.');
-}
+} 
