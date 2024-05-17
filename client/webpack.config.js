@@ -2,7 +2,6 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const WebpackPwaManifest = require('webpack-pwa-manifest');
 const path = require('path');
 const { InjectManifest } = require('workbox-webpack-plugin');
-const { Generator } = require('webpack');
 const is_prod = process.env.NODE_ENV==='production'
 // const WorkboxPlugin = require('workbox-webpack-plugin');
 // TODO: Add and configure workbox plugins for a service worker and manifest file.
@@ -15,7 +14,7 @@ const is_prod = process.env.NODE_ENV==='production'
 const productionPlugins= [
   new InjectManifest({
     swSrc: './src-sw.js',
-    swDest: 'service-worker.js',
+    // swDest: 'service-worker.js',
   }),
   new WebpackPwaManifest({
     name: 'My Progressive Web App',
@@ -23,6 +22,7 @@ const productionPlugins= [
     description: 'My awesome Progressive Web App!',
     background_color: '#ffffff',
     theme_color: '#2196F3',
+    publicPath:'/',
     icons: [
       {
         src: path.resolve('./src/images/logo.png'),
