@@ -16,6 +16,8 @@ const initdb = async () =>
 export const putDb = async (content) => console.error('putDb not implemented');
 
 // TODO: Add logic for a method that gets all the content from the database
+// grabe the document fronm the store with the id of 1 
+//return the text value you have stored to that document
 export const getDb = async () => console.error('getDb not implemented');
 
 initdb();
