@@ -23,10 +23,17 @@ const productionPlugins= [
     background_color: '#ffffff',
     theme_color: '#2196F3',
     publicPath:'/',
+    fingerprints:false,
     icons: [
       {
         src: path.resolve('./src/images/logo.png'),
         sizes: [96, 128, 192, 256, 384, 512],
+        destination: path.join('assets', 'icons'),
+
+      },
+      {
+        src: path.resolve('./src/images/logo.png'),
+        sizes: [96],
         destination: path.join('assets', 'icons'),
         filename:'icon_96x96.png'
       },
@@ -61,6 +68,7 @@ module.exports = () => {
     output: {
       filename: '[name].bundle.js',
       path: path.resolve(__dirname, 'dist'),
+      clean:true
     },
     plugins: plugins,
 
